@@ -27,8 +27,11 @@ def midpoint(x1, y1, x2, y2):
 def inpaint_easyocr(img_path):
     img = cv2.imread(img_path)
     img_copy = img.copy()
+    fig = plt.figure()
     plt.imshow(img)
     plt.show()
+    plt.axis("off")
+    st.pyplot(fig)
     result = reader.readtext(img)
     text = [result[i][1] for i in range(len(result))]
     # text=' '.join(map(str,text))
@@ -57,6 +60,7 @@ def inpaint_easyocr(img_path):
             # img_copy = cv2.morphologyEx(img_copy, cv2.MORPH_CLOSE, kernel)
             # img_copy=cv2.dilate(img_copy,kernel,iterations = 1)
     return (img_copy, rect, text, result)
+
 
 def wrap_text(text, font, max_width):
 
@@ -266,7 +270,7 @@ if file is not None:
 
     option = st.selectbox('Select the source language',
                           tuple(dict_language.keys()))
-
+    src = dict_language[option]
     st.write('You selected:', option)
     model_mBart = MBartForConditionalGeneration.from_pretrained(
         "facebook/mbart-large-50-many-to-many-mmt")
@@ -276,30 +280,39 @@ if file is not None:
     upload_path = os.path.join(path_dir, file.name)
     save_uploadedfile(file, upload_path)
 
-    reader = easyocr.Reader([lang], gpu=False)
+    reader = easyocr.Reader([src], gpu=False)
+
     inpainted, rect, text, result = inpaint_easyocr(upload_path)
     print(f"The detected text is: {text}")
-    st.image(plt.imshow(inpainted))
-    st.image(plt.show())
-    st.image(plt.imshow(rect))
+    fig = plt.figure()
+    plt.imshow(inpainted)
+    plt.show()
+    plt.axis("off")
+    st.pyplot(fig)
+
+    fig = plt.figure()
+    plt.imshow(rect)
+    plt.axis("off")
+    st.pyplot(fig)
 
     target_option = st.selectbox('Select the Target language',
                                  tuple(target_lang.keys()))
-
+    tgt = target_lang[target_option]
     st.write('You selected target language as :', target_option)
 
     text_formatted = preprocessing(text)
 
-    tokenizer_mBart.src_lang = option
+    tokenizer_mBart.src_lang = src
     encoded_mBart = tokenizer_mBart(text_formatted, return_tensors="pt")
     generated_tokens = model_mBart.generate(**encoded_mBart,
                                             forced_bos_token_id=
-                                            tokenizer_mBart.lang_code_to_id[
-                                                target_option])
+                                            tokenizer_mBart.lang_code_to_id[tgt])
     translated_text = tokenizer_mBart.batch_decode(generated_tokens,
                                                    skip_special_tokens=True)
     translated_text_str = " ".join(translated_text)
     st.write(translated_text_str)
+
+    font_dir = os.path.join(os.getcwd(), 'font')
 
     if tgt == 'en_XX':
         fontpath = "gdrive/My Drive/TMLC_Project3/lang/times-new-roman.ttf"
@@ -307,7 +320,7 @@ if file is not None:
                                               translated_text_str, 15)
 
     elif tgt == "ta_IN" or "te_IN" or "ml_IN" or "si_LK" or "hi_IN":
-        fontpath = "gdrive/My Drive/TMLC_Project3/lang/Akshar Unicode.ttf"
+        fontpath = font_dir + "/Akshar Unicode.ttf"
         if (inpainted.shape[0]) <= 400:
             trans_img_lang = translated_img_other_lang(inpainted, result,
                                                        fontpath,
@@ -359,4 +372,7 @@ if file is not None:
         fontpath = "gdrive/My Drive/TMLC_Project3/lang/arial-unicode-ms.ttf"
         trans_img_lang = translated_img_other_lang(inpainted, result, fontpath,
                                                    translated_text_str, 36)
-    st.image(plt.imshow(trans_img_lang))
+    fig = plt.figure()
+    plt.imshow(trans_img_lang)
+    plt.axis("off")
+    st.pyplot(fig)
