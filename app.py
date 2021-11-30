@@ -165,6 +165,7 @@ file = st.file_uploader('Image file')
 
 
 dict_language = {
+    'English': 'en',
     "Tamil": "ta",
     "Telugu": "te",
     "Chinese": "ch_sim",
@@ -185,7 +186,6 @@ dict_language = {
     'Swahili': 'sw',
     'Ukrainian': 'uk',
     'Korean': 'ko',
-    'English': 'en',
     'Romanian': 'ro',
     'Nepali': 'ne',
     'Indonesian': 'id',
@@ -208,6 +208,7 @@ dict_language = {
 }
 
 target_lang = {
+    "Hindi": "hi_IN",
     "Tamil": "ta_IN",
     "Telugu": "te_IN",
     "Arabic": "ar_AR",
@@ -219,7 +220,6 @@ target_lang = {
     "Finnish": "fi_FI",
     "French": "fr_XX",
     "Gujarati": "gu_IN",
-    "Hindi": "hi_IN",
     "Italian": "it_IT",
     "Japanese": "ja_XX",
     "Kazakh": "kk_KZ",
