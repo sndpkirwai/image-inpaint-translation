@@ -263,7 +263,6 @@ target_lang = {
 }
 
 if file is not None:
-    speech, _ = sf.read(file)
 
     option = st.selectbox('Select the source language',
                           tuple(dict_language.keys()))
