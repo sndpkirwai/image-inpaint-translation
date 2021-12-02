@@ -161,8 +161,8 @@ def translated_img_other_lang(inpaint_img, result, fontpath,
 
 st.title('Image-Inpaint')
 st.subheader('Upload any image which needs to be translated')
-model_mBart = MBartForConditionalGeneration.from_pretrained('"facebook/mbart-large-50-many-to-many-mmt"')
-tokenizer_mBart = MBart50TokenizerFast.from_pretrained('"facebook/mbart-large-50-many-to-many-mmt"')
+model_mBart = MBartForConditionalGeneration.from_pretrained('facebook/mbart-large-50-many-to-many-mmt')
+tokenizer_mBart = MBart50TokenizerFast.from_pretrained('facebook/mbart-large-50-many-to-many-mmt')
 
 # if the user chooses to upload the data
 file = st.file_uploader('Image file')
