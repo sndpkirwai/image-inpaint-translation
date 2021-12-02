@@ -161,6 +161,8 @@ def translated_img_other_lang(inpaint_img, result, fontpath,
 
 st.title('Image-Inpaint')
 st.subheader('Upload any image which needs to be translated')
+model_mBart = MBartForConditionalGeneration.from_pretrained('"facebook/mbart-large-50-many-to-many-mmt"')
+tokenizer_mBart = MBart50TokenizerFast.from_pretrained('"facebook/mbart-large-50-many-to-many-mmt"')
 
 # if the user chooses to upload the data
 file = st.file_uploader('Image file')
@@ -272,10 +274,7 @@ if file is not None:
                           tuple(dict_language.keys()))
     src = dict_language[option]
     st.write('You selected:', option)
-    model_mBart = MBartForConditionalGeneration.from_pretrained(
-        "facebook/mbart-large-50-many-to-many-mmt")
-    tokenizer_mBart = MBart50TokenizerFast.from_pretrained(
-        "facebook/mbart-large-50-many-to-many-mmt")
+
     path_dir = os.path.join(os.getcwd(), 'upload')
     upload_path = os.path.join(path_dir, file.name)
     save_uploadedfile(file, upload_path)
@@ -286,12 +285,11 @@ if file is not None:
     print(f"The detected text is: {text}")
     fig = plt.figure()
     plt.imshow(inpainted)
-    plt.show()
     plt.axis("off")
     st.pyplot(fig)
-
     fig = plt.figure()
     plt.imshow(rect)
+    plt.show()
     plt.axis("off")
     st.pyplot(fig)
 
@@ -313,10 +311,10 @@ if file is not None:
     st.write(translated_text_str)
 
     font_dir = os.path.join(os.getcwd(), 'font')
-
+    trans_img_lang = None
     if tgt == 'en_XX':
-        fontpath = "gdrive/My Drive/TMLC_Project3/lang/times-new-roman.ttf"
-        trans_img = translated_img_other_lang(inpainted, result, fontpath,
+        fontpath = font_dir + "/times-new-roman.ttf"
+        trans_img_lang = translated_img_other_lang(inpainted, result, fontpath,
                                               translated_text_str, 15)
 
     elif tgt == "ta_IN" or "te_IN" or "ml_IN" or "si_LK" or "hi_IN":
@@ -338,38 +336,33 @@ if file is not None:
                                                        translated_text_str, 40)
 
     elif tgt == "de_DE":
-        fontpath = "gdrive/My Drive/TMLC_Project3/lang/German.ttf"
+        fontpath = font_dir + "German.ttf"
         trans_img_lang = translated_img_other_lang(inpainted, result, fontpath,
                                                    translated_text_str, 20)
 
-
     elif tgt == "es_XX":
-        fontpath = "gdrive/My Drive/TMLC_Project3/lang/spanish.ttf"
+        fontpath = font_dir + "spanish.ttf"
         trans_img_lang = translated_img_other_lang(inpainted, result, fontpath,
                                                    translated_text_str, 0.02)
         plt.rcParams["figure.figsize"] = (16, 16)
 
-
-
     elif tgt == "fr_XX":
-        fontpath = "gdrive/My Drive/TMLC_Project3/lang/French.ttf"
+        fontpath = font_dir + "French.ttf"
         trans_img_lang = translated_img_other_lang(inpainted, result, fontpath,
                                                    translated_text_str, 20)
 
-
     elif tgt == "ja_XX":
-        fontpath = "gdrive/My Drive/TMLC_Project3/lang/arial-unicode-ms.ttf"
+        fontpath = font_dir + "arial-unicode-ms.ttf"
         trans_img_lang = translated_img_other_lang(inpainted, result, fontpath,
                                                    translated_text_str, 20)
 
     elif tgt == "ko_KR":
-        fontpath = "gdrive/My Drive/TMLC_Project3/lang/arial-unicode-ms.ttf"
+        fontpath = font_dir + "arial-unicode-ms.ttf"
         trans_img_lang = translated_img_other_lang(inpainted, result, fontpath,
                                                    translated_text_str, 20)
 
-
     elif tgt == "zh_CN":  # chinese
-        fontpath = "gdrive/My Drive/TMLC_Project3/lang/arial-unicode-ms.ttf"
+        fontpath = font_dir + "arial-unicode-ms.ttf"
         trans_img_lang = translated_img_other_lang(inpainted, result, fontpath,
                                                    translated_text_str, 36)
     fig = plt.figure()
